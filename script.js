@@ -1,26 +1,10 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<title>repl.it</title>
-	<link href="style.css" rel="stylesheet" type="text/css" />
-</head>
-
-<body>
-	<script src="js/three.js"></script>
-	<script src="js/OrbitControls.js"></script>
-	<script src="js/threex.domevents.js"></script>
-	<script type="module" src="js/VRButton.js"></script>
-
-	<script type="module">
 		import { VRButton } from './js/VRButton.js';
 
 		const scene = new THREE.Scene();
 		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 		const renderer = new THREE.WebGLRenderer();
+		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(renderer.domElement);
 
@@ -30,7 +14,7 @@
 			wireframe: true
 		});
 		const sphere = new THREE.Mesh(geometry, material);
-		scene.add(sphere);
+		// scene.add(sphere);
 
 		// Sphere 2
 		const geometry2 = new THREE.SphereGeometry(10, 10, 10);
@@ -69,7 +53,13 @@
 		const controls = new THREE.OrbitControls(camera, renderer.domElement);
 		controls.minDistance = 1
 		controls.maxDistance = 1000
-		
+
+		const vrbutton = VRButton.createButton(renderer);
+		document.body.appendChild(vrbutton);
+
+		renderer.xr.enabled = true;
+  		document.body.appendChild(VRButton.createButton(renderer));
+
 		const animate = () => {
 
 			//Animate Sphere 1
@@ -87,11 +77,13 @@
 			controls.update();
 
 			requestAnimationFrame(animate);
+			// renderer.setAnimationLoop(function(time) {
+			// 	renderer.render(scene, camera);
+			// });
 			renderer.render(scene, camera);
 		}
+		renderer.setAnimationLoop(function() {
+			renderer.render(scene, camera);
+		});
 
 		animate();
-	</script>
-</body>
-
-</html>
